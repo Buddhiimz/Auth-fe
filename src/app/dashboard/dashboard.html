@@ -1,0 +1,81 @@
+<!-- src/app/dashboard/dashboard.component.html -->
+<div class="dashboard-container">
+  <!-- Header -->
+  <header class="dashboard-header">
+    <div class="header-content">
+      <h1>Dashboard</h1>
+      <button class="logout-btn" (click)="onLogout()">
+        Logout
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="dashboard-main">
+    <div class="dashboard-content" *ngIf="!loading(); else loadingTemplate">
+      <!-- Welcome Section -->
+      <div class="welcome-section" *ngIf="currentUser()">
+        <div class="welcome-card">
+          <h2>Welcome {{ currentUser()?.fullName }}!!</h2>
+          <p class="welcome-subtitle">You have successfully logged into your account</p>
+        </div>
+      </div>
+
+      <!-- User Info Section -->
+      <div class="info-section" *ngIf="currentUser()">
+        <div class="info-card">
+          <h3>Profile Information</h3>
+          <div class="info-grid">
+            <div class="info-item">
+              <label>Full Name:</label>
+              <span>{{ currentUser()?.fullName }}</span>
+            </div>
+            <div class="info-item">
+              <label>Email:</label>
+              <span>{{ currentUser()?.email }}</span>
+            </div>
+            <div class="info-item">
+              <label>Role:</label>
+              <span class="role-badge" [class]="currentUser()?.role?.toLowerCase()">
+                {{ currentUser()?.role }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions Section -->
+      <div class="actions-section">
+        <div class="actions-card">
+          <h3>Quick Actions</h3>
+          <div class="actions-grid">
+            <button class="action-btn profile-btn">
+              <span class="btn-icon">👤</span>
+              <span>Edit Profile</span>
+            </button>
+            <button class="action-btn settings-btn">
+              <span class="btn-icon">⚙️</span>
+              <span>Settings</span>
+            </button>
+            <button class="action-btn help-btn">
+              <span class="btn-icon">❓</span>
+              <span>Help & Support</span>
+            </button>
+            <button class="action-btn logout-btn-alt" (click)="onLogout()">
+              <span class="btn-icon">🚪</span>
+              <span>Logout</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading Template -->
+    <ng-template #loadingTemplate>
+      <div class="loading-container">
+        <div class="loading-spinner"></div>
+        <p>Loading your dashboard...</p>
+      </div>
+    </ng-template>
+  </main>
+</div>

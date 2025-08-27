@@ -5,7 +5,7 @@ import { RouterOutlet } from '@angular/router';
   selector: 'app-root',
   imports: [RouterOutlet],
   templateUrl: './app.html',
-  styleUrl: './app.scss'
+  styleUrls: ['./app.scss']  // fix typo: styleUrl → styleUrls
 })
 export class App {
   protected readonly title = signal('auth-fe');

@@ -1,4 +1,5 @@
-// src/app/auth/register/register.component.ts
+// Component for user registration
+
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators, AbstractControl } from '@angular/forms';
@@ -17,10 +18,11 @@ export class RegisterComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
 
-  loading = signal(false);
-  errorMessage = signal<string | null>(null);
-  successMessage = signal<string | null>(null);
+  loading = signal(false);  // show spinner during requests
+  errorMessage = signal<string | null>(null);  // error messages
+  successMessage = signal<string | null>(null);  // success messages
 
+  // Form group with validation rules
   registerForm = this.fb.group({
     fullName: ['', [Validators.required, Validators.minLength(2)]],
     email: ['', [Validators.required, Validators.email]],
@@ -31,7 +33,7 @@ export class RegisterComponent {
     role: ['User', [Validators.required]]
   }, { validators: this.passwordMatchValidator });
 
-  // --------------------- Form Submit ---------------------
+  // Handle form submission
   onSubmit(): void {
     if (!this.registerForm.valid) {
       this.markFormGroupTouched();
@@ -46,18 +48,18 @@ export class RegisterComponent {
     const dob = new Date(formData.dateOfBirth!);
     const formattedDob = dob.toISOString().split('T')[0]; // YYYY-MM-DD
 
-    // Only send backend-required fields
+    // Prepare data for backend
     const userData: RegisterUser = {
     FullName: formData.fullName!,
     Email: formData.email!,
-    Password: formData.password!,  // <-- send as "Password"
-    ConfirmPassword: formData.confirmPassword!, // if backend needs it
+    Password: formData.password!, 
+    ConfirmPassword: formData.confirmPassword!, 
     PhoneNumber: formData.phoneNumber!,
     DateOfBirth: formattedDob,
     Role: formData.role!
   };
 
-
+    // Send registration request
     this.authService.register(userData).subscribe({
       next: (response) => {
         this.loading.set(false);
@@ -77,7 +79,7 @@ export class RegisterComponent {
     });
   }
 
-  // --------------------- Helpers ---------------------
+  // Helpers 
   private markFormGroupTouched(): void {
     Object.keys(this.registerForm.controls).forEach(key => {
       const control = this.registerForm.get(key);
@@ -85,11 +87,13 @@ export class RegisterComponent {
     });
   }
 
+  // check if field is invalid
   isFieldInvalid(fieldName: string): boolean {
     const field = this.registerForm.get(fieldName);
     return !!(field && field.invalid && (field.dirty || field.touched));
   }
 
+  // get user-friendly error messages
   getFieldError(fieldName: string): string {
     const field = this.registerForm.get(fieldName);
     if (field?.errors) {
@@ -108,6 +112,7 @@ export class RegisterComponent {
     return '';
   }
 
+  // map field names to display names
   private getFieldDisplayName(fieldName: string): string {
     const displayNames: {[key: string]: string} = {
       fullName: 'Full name',
@@ -121,7 +126,8 @@ export class RegisterComponent {
     return displayNames[fieldName] || fieldName;
   }
 
-  // --------------------- Custom Validators ---------------------
+// Custom Validators 
+  // Validates password: must contain letters & numbers
   private passwordValidator(control: AbstractControl): {[key: string]: any} | null {
     const password = control.value;
     if (!password) return null;
@@ -130,11 +136,13 @@ export class RegisterComponent {
     return (hasLetter && hasNumber) ? null : { passwordFormat: 'Password must contain both letters and numbers' };
   }
 
+  // Validates phone number: digits only
   private phoneValidator(control: AbstractControl): {[key: string]: any} | null {
     const phone = control.value;
     return /^\d+$/.test(phone) ? null : { phoneFormat: true };
   }
 
+  // Validates date: must be in the past
   private dateValidator(control: AbstractControl): {[key: string]: any} | null {
     const date = control.value;
     if (!date) return null;
@@ -142,6 +150,7 @@ export class RegisterComponent {
     return selectedDate < new Date() ? null : { dateFormat: true };
   }
 
+  // Validates that password and confirmPassword match
   private passwordMatchValidator(form: AbstractControl): {[key: string]: any} | null {
     const password = form.get('password')?.value;
     const confirmPassword = form.get('confirmPassword')?.value;

@@ -1,4 +1,3 @@
-// src/app/dashboard/dashboard.component.scss
 .dashboard-container {
   min-height: 100vh;
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
@@ -79,86 +78,75 @@
   }
 }
 
+
 // Info Section
 .info-section {
   .info-card {
-    background: white;
+    background: #ffffff; 
     padding: 30px;
     border-radius: 15px;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
 
-    h3 {
-      margin: 0 0 25px 0;
-      color: #333;
-      font-size: 22px;
+    h2 {
+      margin-bottom: 25px;
+      font-size: 26px;   
       font-weight: 600;
+      color: #1f2a38;
     }
 
     .info-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 20px;
 
       .info-item {
         display: flex;
-        justify-content: space-between;
-        align-items: center;
+        flex-direction: column;
         padding: 15px 0;
-        border-bottom: 1px solid #f0f0f0;
+        border-bottom: 1px solid #e6e6e6;
 
         &:last-child {
           border-bottom: none;
         }
 
         label {
+          font-size: 18px; 
           font-weight: 600;
-          color: #555;
+          color: #3a3f50;
+          margin-bottom: 6px;
         }
 
         span {
-          color: #333;
+          font-size: 17px; 
           font-weight: 500;
+          color: #2c2f36;
+          line-height: 1.4;
+        }
+
+        .role-badge, .status-badge {
+          margin-top: 8px;
+          font-size: 12px;
+          font-weight: 500;
+          color: #ffffff;
+          padding: 4px 4px; 
+          border-radius: 12px;
+          display: inline-block;
+          text-align: center;
+          max-width: 80px; 
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis; 
         }
 
         .role-badge {
-          padding: 6px 12px;
-          border-radius: 20px;
-          font-size: 12px;
-          font-weight: 600;
-          text-transform: uppercase;
-
-          &.user {
-            background: #e3f2fd;
-            color: #1976d2;
-          }
-
-          &.admin {
-            background: #fff3e0;
-            color: #f57c00;
-          }
-        }
-
-        .status-badge {
-          padding: 6px 12px;
-          border-radius: 20px;
-          font-size: 12px;
-          font-weight: 600;
-          text-transform: uppercase;
-
-          &.active {
-            background: #e8f5e8;
-            color: #4caf50;
-          }
-
-          &.inactive {
-            background: #ffebee;
-            color: #f44336;
-          }
+          background-color: #4f46e5; // Indigo badge
         }
       }
     }
   }
 }
+
+
 
 // Actions Section
 .actions-section {

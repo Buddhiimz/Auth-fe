@@ -1,4 +1,5 @@
-// src/app/dashboard/dashboard.component.ts
+// Dashboard component showing current user info
+
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthService, User } from '../services/auth';
@@ -13,11 +14,11 @@ import { AuthService, User } from '../services/auth';
 export class DashboardComponent implements OnInit {
   private authService = inject(AuthService);
   
-  currentUser = signal<User | null>(null);
-  loading = signal(true);
+  currentUser = signal<User | null>(null);  // current logged-in user
+  loading = signal(true);  // loading spinner
 
   ngOnInit(): void {
-    // Get current user data
+    // Load current user data from backend
     this.authService.getCurrentUser().subscribe({
       next: (response) => {
         this.loading.set(false);
@@ -31,7 +32,7 @@ export class DashboardComponent implements OnInit {
       }
     });
 
-    // Also subscribe to current user changes
+    // Subscribe to user changes for reactive updates
     this.authService.currentUser$.subscribe(user => {
       if (user) {
         this.currentUser.set(user);
@@ -39,10 +40,12 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  // Logout user
   onLogout(): void {
     this.authService.logout();
   }
 
+  // Format ISO date string to locale string
   formatDate(dateString: string): string {
     return new Date(dateString).toLocaleDateString();
   }

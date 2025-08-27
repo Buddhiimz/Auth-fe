@@ -1,4 +1,5 @@
-// src/app/auth/reset-password/reset-password.component.ts
+// Component for resetting user password via token link
+
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -8,27 +9,28 @@ import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-reset-password',
-  standalone: true,  // ✅ same as others if using standalone
+  standalone: true,  
   imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './reset-password.html',
   styleUrls: ['./reset-password.scss'], // ✅ make sure this line exists
 })
 export class ResetPasswordComponent {
-  resetForm: FormGroup;
-  message: string = '';
-  token: string = '';
+  resetForm: FormGroup;  // form group for new password
+  message: string = '';  // feedback message
+  token: string = '';  // token from reset link
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private route: ActivatedRoute   // ✅ token comes from reset link
+    private route: ActivatedRoute   // get token from query params
   ) {
+    // Initialize form with validation
     this.resetForm = this.fb.group({
       newPassword: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', [Validators.required]]
     });
 
-    // ✅ get token automatically from query params or route
+    // Subscribe to query params to get reset token
     this.route.queryParams.subscribe(params => {
       if (params['token']) {
         this.token = params['token'];
@@ -37,11 +39,13 @@ export class ResetPasswordComponent {
     });
   }
 
+   // Handle form submission
   onSubmit() {
     if (this.resetForm.invalid || !this.token) return;
 
     const { newPassword, confirmPassword } = this.resetForm.value;
 
+    // Send reset password request to backend
     this.authService.resetPassword(this.token, newPassword, confirmPassword).subscribe({
       next: (res: any) => {
         this.message = res.message;

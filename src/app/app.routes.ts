@@ -25,5 +25,7 @@ export const routes: Routes = [
     loadComponent: () => import('./dashboard/dashboard').then(c => c.DashboardComponent),
     canActivate: [authGuard]
   },
+  
+  // Fallback route redirects to login
   { path: '**', redirectTo: '/login' }
 ];

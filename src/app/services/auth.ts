@@ -7,16 +7,16 @@ import { Observable, tap, BehaviorSubject } from 'rxjs';
 export interface RegisterUser {
   FullName: string;
   Email: string;
-  Password: string;       // <-- Change here
-  ConfirmPassword: string; // optional if backend checks it
+  Password: string;       
+  ConfirmPassword: string; 
   PhoneNumber: string;
   DateOfBirth: string;
   Role: string;
 }
 
 export interface LoginUser {
-  Email: string;    // match backend
-  Password: string; // plain password
+  Email: string;    
+  Password: string; 
 }
 
 export interface User {
@@ -31,9 +31,9 @@ export interface User {
 }
 
 export interface AuthResponse {
-  token?: string;   // backend sends this
-  user?: User;      // backend sends this
-  message?: string; // optional error message
+  token?: string;   
+  user?: User;      
+  message?: string; 
 }
 
 @Injectable({
@@ -58,6 +58,9 @@ export class AuthService {
   }
 
   // --------------------- Auth Initialization ---------------------
+
+  // Check if a user is already logged in when the app starts
+  // If a valid token exists, load the current user; otherwise, clear auth
   private initializeAuth(): void {
     if (typeof window !== 'undefined') {  // ✅ SSR-safe
       const token = this.getToken();
@@ -71,10 +74,13 @@ export class AuthService {
   }
 
   // --------------------- Auth Methods ---------------------
+
+  // Register a new user
   register(userData: RegisterUser): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.baseUrl}/register`, userData);
   }
 
+  // Login user and save token & user info, then go to dashboard
   login(credentials: LoginUser): Observable<AuthResponse> {
   return this.http.post<AuthResponse>(`${this.baseUrl}/login`, credentials)
     .pipe(
@@ -88,6 +94,7 @@ export class AuthService {
     );
   }
 
+  // Get currently logged-in user from backend and update state
   getCurrentUser(): Observable<AuthResponse> {
     return this.http.get<AuthResponse>(`${this.baseUrl}/me`)
       .pipe(
@@ -100,12 +107,15 @@ export class AuthService {
       );
   }
 
+  // Logout user and clear all auth data
   logout(): void {
     this.clearAuth();
     this.router.navigate(['/login']);
   }
 
   // --------------------- Private Helpers ---------------------
+
+  // Save token and user info to localStorage & reactive state
   private setAuth(token: string, user: User): void {
     if (typeof window !== 'undefined') {
       localStorage.setItem('auth_token', token);
@@ -115,6 +125,7 @@ export class AuthService {
     this.currentUserSubject.next(user);
   }
 
+  // Clear token and user info from localStorage & reactive state
   private clearAuth(): void {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('auth_token');
@@ -124,6 +135,7 @@ export class AuthService {
     this.currentUserSubject.next(null);
   }
 
+  // Get token from localStorage
   getToken(): string | null {
     if (typeof window !== 'undefined') {
       return localStorage.getItem('auth_token');
@@ -131,6 +143,7 @@ export class AuthService {
     return null;
   }
 
+  // Check if token has expired
   private isTokenExpired(token: string): boolean {
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
@@ -140,10 +153,12 @@ export class AuthService {
     }
   }
 
+  // Send forgot password request to backend
   forgotPassword(email: string): Observable<any> {
     return this.http.post(`${this.baseUrl}/forgot`, { Email: email });
   }
 
+  // Send reset password request to backend
   resetPassword(token: string, newPassword: string, confirmPassword: string): Observable<any> {
     return this.http.post(`${this.baseUrl}/reset`, {
       Token: token,

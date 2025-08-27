@@ -139,4 +139,16 @@ export class AuthService {
       return true;
     }
   }
+
+  forgotPassword(email: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/forgot`, { Email: email });
+  }
+
+  resetPassword(token: string, newPassword: string, confirmPassword: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/reset`, {
+      Token: token,
+      NewPassword: newPassword,
+      ConfirmPassword: confirmPassword
+    });
+  }
 }
